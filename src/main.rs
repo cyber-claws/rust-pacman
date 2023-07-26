@@ -1,3 +1,5 @@
+use std::fmt::Alignment;
+
 use bevy::prelude::*;
 use bevy::window::*;
 use bevy::sprite::MaterialMesh2dBundle;
@@ -42,6 +44,11 @@ const MAP: [[char; 19]; 24] = [
     ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
 ];
 
+// Points
+const POWER_PILL_POINTS: usize = 50;
+const NORMAL_PILL_POINTS: usize = 10;
+
+// General game config
 const MOVE_FORCE: f32 =  100.;
 const BLOCK_SCALE: f32 = 24.;
 const SCREEN_WIDTH: f32 = 456.;
@@ -64,8 +71,9 @@ fn main() {
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::default())
         // .add_plugins(RapierDebugRenderPlugin::default())
         .insert_resource(ClearColor(Color::BLACK))
-        .add_systems(Startup, (setup_camera, setup_sounds, draw_map))
+        .add_systems(Startup, (setup_camera, setup_hud_resources, setup_sounds, draw_map))
         .add_systems(Update, (update_pacman, update_normal_pills))
+        .add_systems(PostUpdate, render_hud)
         .run();
 }
 
@@ -102,9 +110,25 @@ impl PacMan {
 struct PacManChompSound(Handle<AudioSource>);
 
 #[derive(Resource)]
-struct Scoreboard {
+struct GameHUD {
+    lives: u8,
     score: usize,
 }
+
+impl Default for GameHUD {
+    fn default() -> Self {
+        GameHUD {
+            lives: 3,
+            score: 0,
+        }
+    }
+}
+fn setup_hud_resources(
+    mut commands: Commands,
+) {
+    commands.insert_resource(GameHUD { ..Default::default() });
+}
+
 
 fn setup_camera(
     mut commands: Commands,
@@ -127,6 +151,7 @@ fn draw_map(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: Res<AssetServer>,
 ) {
     for i in 0..MAP.len() {
         for j in 0..MAP[i].len() {
@@ -228,9 +253,41 @@ fn draw_map(
                     });
                 },
                 _ => {}
-            }   
+            }
         }
     }
+    let font = asset_server.load("fonts/font.ttf");
+    commands.spawn(
+        TextBundle::from_sections([
+            TextSection::new(
+                "SCORE\n",
+                TextStyle {
+                    font_size: 10.,
+                    color: Color::WHITE,
+                    font: font.clone(),
+                    ..default()
+                },
+            ),
+            TextSection::new(
+                "",
+                TextStyle {
+                    font_size: 10.,
+                    color: Color::WHITE,
+                    font: font.clone(),
+                    ..default()
+                },
+            ),
+        ])
+        .with_style(Style {
+            width: Val::Percent(100.),
+            align_items: AlignItems::Center,
+            align_content: AlignContent::Center,
+            flex_direction: FlexDirection::Column,
+            position_type: PositionType::Absolute,
+            justify_content: JustifyContent::Center,
+            ..default()
+        }).with_text_alignment(TextAlignment::Center),
+    );
 }
 
 fn update_pacman(
@@ -277,7 +334,7 @@ fn update_pacman(
         }
 
         if transform.translation.x < -((SCREEN_WIDTH / 2.) + BLOCK_SCALE + 0.5) {
-            transform.translation.x = ((SCREEN_WIDTH / 2.) + BLOCK_SCALE + 0.5);
+            transform.translation.x = (SCREEN_WIDTH / 2.) + BLOCK_SCALE + 0.5;
         }
     }
 }
@@ -287,29 +344,40 @@ fn update_normal_pills(
     mut pill: Query<Entity, With<Pill>>,
     pacman: Query<Entity, With<PacMan>>,
     mut events: EventReader<CollisionEvent>,
+    mut game_hud: ResMut<GameHUD>,
 ) {
     for event in events.iter() {
         match event {
             CollisionEvent::Started(a, b, _) => {
-                if let (Ok(small_pill), Ok(pac_man)) =
+                if let (Ok(small_pill), Ok(_pac_man)) =
                     (pill.get_mut(*a), pacman.get(*b))
                 {
                     // Despawn on colision
                     commands
                         .entity(small_pill)
-                        .despawn_recursive();             
-                } else if let (Ok(entity), Ok(pac_man)) =
+                        .despawn_recursive();
+                    game_hud.score += NORMAL_PILL_POINTS;          
+                } else if let (Ok(entity), Ok(_pac_man)) =
                     (pill.get_mut(*b), pacman.get(*a))
                 {
                     commands
                         .entity(entity)
                         .despawn_recursive();
+                    game_hud.score += NORMAL_PILL_POINTS;
                 }
             }
             CollisionEvent::Stopped(_, _, _) => {}
         }
     }
     events.clear()
+}
+
+fn render_hud(
+    game_hub: Res<GameHUD>,
+    mut query: Query<&mut Text>,
+) {
+    let mut text = query.single_mut();
+    text.sections[1].value = game_hub.score.to_string();
 }
 
 fn play_chomp_sound(
