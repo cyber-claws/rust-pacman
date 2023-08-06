@@ -1,4 +1,4 @@
-use std::process;
+
 
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
@@ -77,19 +77,19 @@ fn get_ghost_color(ghost: GhostNames) -> Color {
 }
 
 pub fn ghosts_update(
-    mut commands: Commands,
+    _commands: Commands,
     mut ghost: Query<Entity, With<Ghost>>,
     pacman: Query<Entity, With<PacMan>>,
     mut events: EventReader<CollisionEvent>,
-    mut game_hud: ResMut<GameState>,
+    _game_hud: ResMut<GameState>,
 ) {
     for event in events.iter() {
         match event {
             CollisionEvent::Started(a, b, _) => {
-                if let (Ok(ghost), Ok(_pac_man)) = (ghost.get_mut(*a), pacman.get(*b)) {
+                if let (Ok(_ghost), Ok(_pac_man)) = (ghost.get_mut(*a), pacman.get(*b)) {
                     // Maybe hit by Ghost
                     panic!("Oops, you just got hit by a ghost");
-                } else if let (Ok(ghost), Ok(_pac_man)) = (ghost.get_mut(*b), pacman.get(*a)) {
+                } else if let (Ok(_ghost), Ok(_pac_man)) = (ghost.get_mut(*b), pacman.get(*a)) {
                     // Maybe hit by Ghost
                     panic!("Oops, you just got hit by a ghost");
                 }

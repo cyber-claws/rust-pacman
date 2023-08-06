@@ -21,7 +21,7 @@ pub fn setup_walls(
                         .spawn(Wall)
                         .insert(RigidBody::Fixed)
                         .insert(TransformBundle::from(Transform::from_xyz(
-                            (BLOCK_SCALE * j as f32),
+                            BLOCK_SCALE * j as f32,
                             -(BLOCK_SCALE * i as f32),
                             0.,
                         )))
