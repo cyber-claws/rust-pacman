@@ -7,10 +7,8 @@ pub const NORMAL_PILL_POINTS: usize = 10;
 // General game config
 pub const MOVE_FORCE: f32 = 100.;
 pub const BLOCK_SCALE: f32 = 24.;
-pub const SCREEN_WIDTH: f32 = 456.;
-pub const SCREEN_HEIGHT: f32 = 576.;
-pub const SCREEN_BOTTOM_Y: f32 = SCREEN_HEIGHT / 2. - 12.; // 12.0 is half of the block, helps center the grid.
-pub const SCREEN_BOTTOM_X: f32 = -SCREEN_WIDTH / 2. + 12.; // 12.0 is half of the block, helps center the grid.
+pub const SCREEN_WIDTH: f32 = 19. * BLOCK_SCALE;
+pub const SCREEN_HEIGHT: f32 = 24. * BLOCK_SCALE;
 
 /**
  * '#' -> Wall

@@ -42,8 +42,8 @@ pub fn setup_player(
         // ))
         .insert(RigidBody::Dynamic)
         .insert(TransformBundle::from(Transform::from_xyz(
-            SCREEN_BOTTOM_X + (BLOCK_SCALE * PACKMAN_INITIAL_POSITION.0),
-            SCREEN_BOTTOM_Y - (BLOCK_SCALE * PACKMAN_INITIAL_POSITION.1),
+            BLOCK_SCALE * PACKMAN_INITIAL_POSITION.0,
+            -BLOCK_SCALE * PACKMAN_INITIAL_POSITION.1,
             0.,
         )))
         .insert(Collider::ball((BLOCK_SCALE * 0.045) / 2.))
@@ -66,8 +66,8 @@ pub fn setup_player(
             transform: Transform::default()
                 .with_scale(Vec3::splat(BLOCK_SCALE * 0.75))
                 .with_translation(Vec3::from_array([
-                    SCREEN_BOTTOM_X + (BLOCK_SCALE * PACKMAN_INITIAL_POSITION.0),
-                    SCREEN_BOTTOM_Y - (BLOCK_SCALE * PACKMAN_INITIAL_POSITION.1),
+                    BLOCK_SCALE * PACKMAN_INITIAL_POSITION.0,
+                    -BLOCK_SCALE * PACKMAN_INITIAL_POSITION.1,
                     0.,
                 ])),
             material: materials.add(ColorMaterial::from(Color::YELLOW)),
@@ -114,12 +114,17 @@ pub fn player_update(
         }
 
         // Handle portaling
-        if transform.translation.x > ((SCREEN_WIDTH / 2.) + BLOCK_SCALE + 0.5) {
-            transform.translation.x = -((SCREEN_WIDTH / 2.) + BLOCK_SCALE + 0.5);
+        if transform.translation.x > (SCREEN_WIDTH + BLOCK_SCALE) {
+            transform.translation.x = -BLOCK_SCALE;
         }
 
-        if transform.translation.x < -((SCREEN_WIDTH / 2.) + BLOCK_SCALE + 0.5) {
-            transform.translation.x = (SCREEN_WIDTH / 2.) + BLOCK_SCALE + 0.5;
+        if transform.translation.x < -BLOCK_SCALE {
+            transform.translation.x = SCREEN_WIDTH + BLOCK_SCALE;
         }
+        // println!(
+        //     "Pac-Man is at: ({}, {})",
+        //     (transform.translation.x.clone().abs() / BLOCK_SCALE).ceil() as u32,
+        //     (transform.translation.y.clone().abs() / BLOCK_SCALE).ceil() as u32
+        // );
     }
 }

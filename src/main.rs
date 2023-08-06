@@ -70,7 +70,12 @@ fn main() {
         )
         .add_systems(
             Update,
-            (player_update, normal_pills_update, power_pills_update),
+            (
+                player_update,
+                normal_pills_update,
+                power_pills_update,
+                ghosts_update,
+            ),
         )
         .add_systems(PostUpdate, hud_update)
         .add_systems(FixedUpdate, power_pill_cool_down)

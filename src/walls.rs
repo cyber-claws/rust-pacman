@@ -21,8 +21,8 @@ pub fn setup_walls(
                         .spawn(Wall)
                         .insert(RigidBody::Fixed)
                         .insert(TransformBundle::from(Transform::from_xyz(
-                            SCREEN_BOTTOM_X + (BLOCK_SCALE * j as f32),
-                            SCREEN_BOTTOM_Y - (BLOCK_SCALE * i as f32),
+                            (BLOCK_SCALE * j as f32),
+                            -(BLOCK_SCALE * i as f32),
                             0.,
                         )))
                         .insert(Collider::cuboid(
@@ -36,8 +36,8 @@ pub fn setup_walls(
                             transform: Transform::default()
                                 .with_scale(Vec3::splat(BLOCK_SCALE))
                                 .with_translation(Vec3::from_array([
-                                    SCREEN_BOTTOM_X + (BLOCK_SCALE * j as f32),
-                                    SCREEN_BOTTOM_Y - (BLOCK_SCALE * i as f32),
+                                    BLOCK_SCALE * j as f32,
+                                    -BLOCK_SCALE * i as f32,
                                     0.,
                                 ])),
                             material: materials.add(ColorMaterial::from(Color::BLUE)),

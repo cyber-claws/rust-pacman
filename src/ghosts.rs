@@ -1,7 +1,12 @@
+use std::process;
+
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
+use bevy_rapier2d::prelude::*;
 
 use crate::constants::*;
+use crate::game::*;
+use crate::player::PacMan;
 use crate::shared::enums::Direction;
 
 #[derive(Clone, Copy)]
@@ -46,13 +51,19 @@ pub fn setup_ghosts(
                 transform: Transform::default()
                     .with_scale(Vec3::splat(BLOCK_SCALE * 0.4))
                     .with_translation(Vec3::from_array([
-                        SCREEN_BOTTOM_X + (BLOCK_SCALE * ghost.1),
-                        SCREEN_BOTTOM_Y - (BLOCK_SCALE * ghost.2),
-                        0.5, // Add a little on the z-index just to make sure the ghosts are always about the pills
+                        BLOCK_SCALE * ghost.1,
+                        -BLOCK_SCALE * ghost.2,
+                        0.,
                     ])),
                 material: materials.add(ColorMaterial::from(get_ghost_color(ghost.0))),
                 ..default()
-            });
+            })
+            .insert(RigidBody::Dynamic)
+            .insert(Collider::ball(BLOCK_SCALE * 0.06 / 2.))
+            .insert(Sensor)
+            .insert(Restitution::coefficient(0.))
+            .insert(ActiveEvents::COLLISION_EVENTS)
+            .insert(GravityScale(0.));
     }
 }
 
@@ -65,9 +76,26 @@ fn get_ghost_color(ghost: GhostNames) -> Color {
     }
 }
 
-pub fn _ghosts_tick(
-    _commands: Commands,
-    _meshes: ResMut<Assets<Mesh>>,
-    _materials: ResMut<Assets<ColorMaterial>>,
+pub fn ghosts_update(
+    mut commands: Commands,
+    mut ghost: Query<Entity, With<Ghost>>,
+    pacman: Query<Entity, With<PacMan>>,
+    mut events: EventReader<CollisionEvent>,
+    mut game_hud: ResMut<GameState>,
 ) {
+    for event in events.iter() {
+        match event {
+            CollisionEvent::Started(a, b, _) => {
+                if let (Ok(ghost), Ok(_pac_man)) = (ghost.get_mut(*a), pacman.get(*b)) {
+                    // Maybe hit by Ghost
+                    panic!("Oops, you just got hit by a ghost");
+                } else if let (Ok(ghost), Ok(_pac_man)) = (ghost.get_mut(*b), pacman.get(*a)) {
+                    // Maybe hit by Ghost
+                    panic!("Oops, you just got hit by a ghost");
+                }
+            }
+            CollisionEvent::Stopped(_, _, _) => {}
+        }
+    }
+    events.clear()
 }

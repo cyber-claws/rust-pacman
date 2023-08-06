@@ -29,8 +29,8 @@ pub fn setup_pills(
                             transform: Transform::default()
                                 .with_scale(Vec3::splat(BLOCK_SCALE * 0.25))
                                 .with_translation(Vec3::from_array([
-                                    SCREEN_BOTTOM_X + (BLOCK_SCALE * j as f32),
-                                    SCREEN_BOTTOM_Y - (BLOCK_SCALE * i as f32),
+                                    BLOCK_SCALE * j as f32,
+                                    -BLOCK_SCALE * i as f32,
                                     0.,
                                 ])),
                             material: materials.add(ColorMaterial::from(Color::WHITE)),
@@ -51,8 +51,8 @@ pub fn setup_pills(
                             transform: Transform::default()
                                 .with_scale(Vec3::splat(BLOCK_SCALE * 0.5))
                                 .with_translation(Vec3::from_array([
-                                    SCREEN_BOTTOM_X + (BLOCK_SCALE * j as f32),
-                                    SCREEN_BOTTOM_Y - (BLOCK_SCALE * i as f32),
+                                    BLOCK_SCALE * j as f32,
+                                    -BLOCK_SCALE * i as f32,
                                     0.,
                                 ])),
                             material: materials.add(ColorMaterial::from(Color::WHITE)),
