@@ -3,7 +3,7 @@ use bevy::sprite::MaterialMesh2dBundle;
 use bevy_rapier2d::prelude::*;
 
 use crate::constants::*;
-use crate::game::PacManChompSound;
+
 use crate::shared::enums::Direction;
 
 #[derive(Default, Component)]

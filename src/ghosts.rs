@@ -65,9 +65,9 @@ fn get_ghost_color(ghost: GhostNames) -> Color {
     }
 }
 
-pub fn ghosts_tick(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+pub fn _ghosts_tick(
+    _commands: Commands,
+    _meshes: ResMut<Assets<Mesh>>,
+    _materials: ResMut<Assets<ColorMaterial>>,
 ) {
 }
