@@ -78,9 +78,10 @@ fn main() {
                 normal_pills_update,
                 power_pills_update,
                 ghosts_update,
+                check_for_collionsion_events,
             ),
         )
-        .add_systems(PostUpdate, hud_update)
+        .add_systems(PostUpdate, (hud_update, move_ghosts))
         .add_systems(FixedUpdate, power_pill_cool_down)
         .run();
 }

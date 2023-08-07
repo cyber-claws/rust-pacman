@@ -3,6 +3,8 @@ use bevy::sprite::MaterialMesh2dBundle;
 use bevy_rapier2d::prelude::*;
 
 use crate::constants::*;
+use crate::game::GameState;
+use crate::ghosts::*;
 
 use crate::shared::enums::Direction;
 
@@ -123,4 +125,28 @@ pub fn player_update(
             transform.translation.x = SCREEN_WIDTH + BLOCK_SCALE;
         }
     }
+}
+
+pub fn check_for_collionsion_events(
+    _commands: Commands,
+    mut ghost: Query<Entity, With<Ghost>>,
+    pacman: Query<Entity, With<PacMan>>,
+    mut events: EventReader<CollisionEvent>,
+    _game_hud: ResMut<GameState>,
+) {
+    for event in events.iter() {
+        match event {
+            CollisionEvent::Started(a, b, _) => {
+                if let (Ok(_ghost), Ok(_pac_man)) = (ghost.get_mut(*a), pacman.get(*b)) {
+                    // Maybe hit by Ghost
+                    panic!("Oops, you just got hit by a ghost");
+                } else if let (Ok(_ghost), Ok(_pac_man)) = (ghost.get_mut(*b), pacman.get(*a)) {
+                    // Maybe hit by Ghost
+                    panic!("Oops, you just got hit by a ghost");
+                }
+            }
+            CollisionEvent::Stopped(_, _, _) => {}
+        }
+    }
+    events.clear()
 }

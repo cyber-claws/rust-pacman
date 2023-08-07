@@ -18,7 +18,7 @@ pub fn setup_camera(mut commands: Commands) {
             ..default()
         },
         BloomSettings {
-            intensity: 0.2,
+            intensity: 0.3,
             ..default()
         },
     ));
