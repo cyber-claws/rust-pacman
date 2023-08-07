@@ -4,8 +4,18 @@ use bevy_rapier2d::prelude::*;
 
 use crate::constants::*;
 
-#[derive(Default, Component)]
-pub struct Wall;
+#[derive(Component)]
+pub struct Wall {
+    pub position: Vec2,
+}
+
+impl Default for Wall {
+    fn default() -> Self {
+        Wall {
+            position: Vec2::splat(0.1),
+        }
+    }
+}
 
 pub fn setup_walls(
     mut commands: Commands,
@@ -18,7 +28,7 @@ pub fn setup_walls(
             match cell {
                 '#' => {
                     commands
-                        .spawn(Wall)
+                        .spawn(Wall::default())
                         .insert(RigidBody::Fixed)
                         .insert(TransformBundle::from(Transform::from_xyz(
                             BLOCK_SCALE * j as f32,

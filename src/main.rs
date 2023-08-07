@@ -37,6 +37,9 @@ use walls::*;
 mod player;
 use player::*;
 
+// Utils
+mod utils;
+
 fn main() {
     App::new()
         .add_plugins(

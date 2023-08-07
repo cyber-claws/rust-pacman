@@ -40,6 +40,7 @@ pub fn setup_player(
         //     animation_indices,
         //     AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
         // ))
+        .insert(CollidingEntities::default())
         .insert(RigidBody::Dynamic)
         .insert(TransformBundle::from(Transform::from_xyz(
             BLOCK_SCALE * PACKMAN_INITIAL_POSITION.0,
@@ -121,10 +122,5 @@ pub fn player_update(
         if transform.translation.x < -BLOCK_SCALE {
             transform.translation.x = SCREEN_WIDTH + BLOCK_SCALE;
         }
-        // println!(
-        //     "Pac-Man is at: ({}, {})",
-        //     (transform.translation.x.clone().abs() / BLOCK_SCALE).ceil() as u32,
-        //     (transform.translation.y.clone().abs() / BLOCK_SCALE).ceil() as u32
-        // );
     }
 }
