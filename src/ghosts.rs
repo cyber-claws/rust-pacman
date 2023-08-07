@@ -98,7 +98,7 @@ pub fn ghosts_update(
     _commands: Commands,
     mut ghost: Query<(&Transform, &mut Ghost)>,
     pacman: Query<&Transform, With<PacMan>>,
-    mut events: EventReader<CollisionEvent>,
+    _events: EventReader<CollisionEvent>,
     _game_hud: ResMut<GameState>,
 ) {
     for (ghost_transform, mut ghost_entity) in ghost.iter_mut() {
@@ -134,7 +134,7 @@ pub fn move_ghosts(
     time: Res<Time>,
     mut ghost: Query<(&mut Transform, &mut Ghost, &mut ExternalForce)>,
 ) {
-    for (mut transform, mut ghost, mut external_force) in &mut ghost.iter_mut() {
+    for (mut transform, ghost, mut external_force) in &mut ghost.iter_mut() {
         match ghost.direction {
             Direction::Up => {
                 external_force.force = Vec2::new(0., MOVE_FORCE * time.delta_seconds());
@@ -169,7 +169,7 @@ fn find_succesors(point: &Point) -> Vec<Point> {
     let &Point {
         x,
         y,
-        direction_from_source,
+        direction_from_source: _,
     } = point;
     let mut neighbors = Vec::new();
 
